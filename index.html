@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Php mysql </title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" />
+	<style>
+		input,select{
+			width: 80%;
+			margin: 10px auto;
+		}
+		span#displaysearch{
+			padding: 10px;
+			background-color: grey;
+			cursor: pointer;
+		}
+		
+	</style>
+</head>
+<body><br>
+	<div class="container" style="margin: auto; max-width: 900px;">
+		<h2 style="text-align: center;">Demonstatrating Use of php Mysql Ajax</h2>
+		<div style="width: 400px; margin-left: 50px; float: left;">
+			<h4>this section allows user to add information inthe database the user is able to
+			view suggestions  that currently exists in the database</h4>
+			<input id="name" type="text" name="name" class="form-control" placeholder="Enter name" 
+			oninput="SendData(this.value);if(this.value==''){document.getElementById('displaysearch').style.backgroundColor='white';}">
+			<span id="displaysearch" 
+			onclick="document.getElementById('name').value=this.innerHTML;
+			this.innerHTML='';this.style.backgroundColor='white';">results display here</span><br>
+			<select name="gender" class="form-control">
+				<option value="">choose one</option>
+				<option value="male">male</option>
+				<option value="female">female</option>
+				<option value="not specified">Not specified</option>
+			</select><br>
+			<input type="date" name="dateofbirth" class="form-control" placeholder="add date of birth">
+			<br>
+			<button class="btn btn-info">Add To DataBase</button>
+		</div>
+		<div style="border-left: 1px solid #000; width: 400px; float: left; margin-left: 20px;padding-left: 20px;">
+			<h4>
+				In this Scetion the User is able to Search And View results if they exists in the database
+			</h4>
+			<div class="alert alert-info" style="border: 1px solid grey; padding:10px; ">
+				<h5 style="margin: 0px; padding: 0px;">Displaying Search Results</h5>
+				<span><strong>Name:</strong> Wanjiru</span><br>
+				<span><strong>Gender:</strong> Female</span><br>
+				<span><strong>Date Of Birth:</strong> 26th Sept</span><br>
+			</div>
+			<input type="text" name="search" class="form-control">
+			<br>
+			<button class="btn btn-primary">Search</button>
+
+		</div>
+		
+	</div>
+
+<script>
+	var displaysearch =document.getElementById("displaysearch");
+	function SendData(str) {
+    if (str.length == 0) { 
+        displaysearch.innerHTML = "";
+        return;
+    } else {
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {         
+				if (xmlhttp.responseText!="1"&&xmlhttp.responseText != "2") {
+					displaysearch.style.backgroundColor = "green";
+					displaysearch.style.color = "white";
+					displaysearch.innerHTML = xmlhttp.responseText;
+				}else{
+					displaysearch.style.backgroundColor = "red";
+					displaysearch.style.color="white";
+					displaysearch.innerHTML = "No such name in the database";
+				}
+            }
+        }
+        xmlhttp.open("GET", "logic.php?name=" + str, true);
+        xmlhttp.send();
+    }
+}
+
+</script>
+</body>
+</html>
