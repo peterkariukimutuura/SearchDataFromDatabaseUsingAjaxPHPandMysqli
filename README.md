@@ -23,4 +23,6 @@
 
 # NOTICE!!!!!!!
 
-    As of now the Code is not complete!! Give me by the end of the day to finish it...also you can see the readme is still lacking crucial information about installation..:-D
+    As of now the Code is not complete!! Give me by the end of the day to finish it...
+    also you can see the readme is still lacking crucial information about installation..
+    :-D
