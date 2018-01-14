@@ -44,24 +44,28 @@
 			<h4>
 				In this Scetion the User is able to Search And View results if they exists in the database
 			</h4>
-			<div class="alert alert-info" style="border: 1px solid grey; padding:10px; ">
-				<h5 style="margin: 0px; padding: 0px;">Displaying Search Results</h5>
-				<span><strong>Name:</strong> Wanjiru</span><br>
-				<span><strong>Gender:</strong> Female</span><br>
-				<span><strong>Date Of Birth:</strong> 26th Sept</span><br>
+			<div id="div_results" class="alert alert-info">
+					Results from database display here
 			</div>
-			<input type="text" name="search" class="form-control">
+			<div id="displayresult" 
+			class="alert alert-success" style="border: 1px solid grey; padding:10px; display: none;">
+				<h5 style="margin: 0px; padding: 0px;">Displaying Search Results</h5>
+				<strong style="color: black;">Name:</strong><span id="span_name" style="padding-left: 65px;"></span><br>
+				<strong style="color: black;">Gender:</strong><span id="span_gender" style="padding-left: 52px;" ></span><br>
+				<strong  style="color: black;">Date Of Birth:</strong><span id="span_dob" style="padding-left: 10px;"></span><br>
+			</div>
+			<input type="text" id="searchname" name="search" class="form-control" placeholder="enter name">
 			<br>
-			<button class="btn btn-primary">Search</button>
+			<button class="btn btn-primary" onclick="search()">Search</button>
 
 		</div>
 		
 	</div>
-
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script>
+
 	var displaysearch =document.getElementById("displaysearch");
 	var data4rmdb="";
-	//var xmlhttp = new XMLHttpRequest();
 	var xmlhttp;
 	if (window.XMLHttpRequest ){
 		xmlhttp=new XMLHttpRequest();
@@ -72,6 +76,7 @@
 
 	function SendData(str) {
 		displaysearch.style.display="";
+		displaysearch.innerHTML="";
     if (str.length === 0) { 
         displaysearch.innerHTML = "";
         return;
@@ -100,7 +105,6 @@
     }
 }
 function addtoDatabase(){
-	// data4rmdb="User Added";
 	var userInputname =document.getElementById("name").value;
 	var gender = document.getElementById("gender").value;
 	var dateofbirth=document.getElementById("dateofbirth").value;
@@ -136,12 +140,52 @@ function addtoDatabase(){
 	document.getElementById('name').value="";
 	document.getElementById('gender').value="";
 	document.getElementById('dateofbirth').value="";
-	// name.value="";
-	// gender.value="";
-	// dateofbirth.value="";
 	alert("User Successfully Addded!");
-
+	displaysearch.innerHTML="";
 }
+	//search btn
+
+			function  search(){
+				var input_search =document.getElementById('searchname').value;
+				if (input_search.length>0) {
+					$.ajax({
+						type:'POST',
+						url:'search.php',
+						data:{name:input_search},
+						success:function(response){
+							if (response!="That User does not exist in database!") {
+								var obj=JSON.parse(response);
+								console.log(response);
+								console.log(obj.name);
+									document.getElementById('div_results').style.display = 'none';
+								document.getElementById('displayresult').style.display = '';
+
+								document.getElementById("span_name").innerHTML=obj.name;
+								document.getElementById("span_gender").innerHTML=obj.gender;
+								document.getElementById("span_dob").innerHTML=obj.dateofbirth;
+
+							}else{
+								alert(response);
+							}
+							
+							document.getElementById('searchname').value="";
+
+						},
+						error:function(jqXHR,textStatus,errorThrown){
+							console.log(textStatus,errorThrown);
+						}
+
+					});
+
+
+
+				}else{
+					document.getElementById('searchname').style.borderColor = 'red';
+
+					alert("kindly enter a name to search");
+
+				}
+			}
 </script>
 </body>
 </html>
