@@ -77,6 +77,7 @@
 	function SendData(str) {
 		displaysearch.style.display="";
 		displaysearch.innerHTML="";
+		
     if (str.length === 0) { 
         displaysearch.innerHTML = "";
         return;
@@ -125,12 +126,8 @@ function addtoDatabase(){
 
 	if (xmlhttp.readyState==4 && xmlhttp.status==200) {
 		xmlhttp.open("POST", "postdata.php", true); 
-		console.log("1");
-     	xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");   
-     	console.log("2");               
+     	xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");               
      	xmlhttp.send(data);
-
-     	console.log("3");
      	console.log(xmlhttp.responseText);
 
 	}else{
@@ -155,8 +152,6 @@ function addtoDatabase(){
 						success:function(response){
 							if (response!="That User does not exist in database!") {
 								var obj=JSON.parse(response);
-								console.log(response);
-								console.log(obj.name);
 									document.getElementById('div_results').style.display = 'none';
 								document.getElementById('displayresult').style.display = '';
 
@@ -186,6 +181,11 @@ function addtoDatabase(){
 
 				}
 			}
+document.getElementById('name').onclick=function(){
+	document.getElementById('displayresult').style.display = 'none';
+	document.getElementById('div_results').style.display = '';
+
+}
 </script>
 </body>
 </html>
