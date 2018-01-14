@@ -25,17 +25,20 @@
 			<input id="name" type="text" name="name" class="form-control" placeholder="Enter name" 
 			oninput="SendData(this.value);if(this.value==''){document.getElementById('displaysearch').style.backgroundColor='white';}">
 			<span id="displaysearch" 
-			onclick="document.getElementById('name').value=this.innerHTML;
-			this.innerHTML='';this.style.backgroundColor='white';">results display here</span><br>
-			<select name="gender" class="form-control">
-				<option value="">choose one</option>
+			onclick="
+			if(document.getElementById('name').value!=''){document.getElementById('name').value=this.innerHTML;}
+			this.innerHTML='';
+			this.style.backgroundColor='white';">results display here</span><br>
+			<select id="gender" name="gender" class="form-control">
+				<option value="">choose a gender</option>
 				<option value="male">male</option>
 				<option value="female">female</option>
 				<option value="not specified">Not specified</option>
 			</select><br>
-			<input type="date" name="dateofbirth" class="form-control" placeholder="add date of birth">
+			<input type="date" id="dateofbirth" name="dateofbirth" 
+			class="form-control" placeholder="add date of birth">
 			<br>
-			<button class="btn btn-info">Add To DataBase</button>
+			<button type="submit" id="addtoDatabase" onclick="addtoDatabase()" class="btn btn-info">Add To DataBase</button>
 		</div>
 		<div style="border-left: 1px solid #000; width: 400px; float: left; margin-left: 20px;padding-left: 20px;">
 			<h4>
@@ -57,18 +60,34 @@
 
 <script>
 	var displaysearch =document.getElementById("displaysearch");
+	var data4rmdb="";
+	//var xmlhttp = new XMLHttpRequest();
+	var xmlhttp;
+	if (window.XMLHttpRequest ){
+		xmlhttp=new XMLHttpRequest();
+	}else if(window.ActiveXObject){
+		xmlhttp=new ActiveXObject('Microsoft.XMLHTTP');
+	}
+
+
 	function SendData(str) {
-    if (str.length == 0) { 
+		displaysearch.style.display="";
+    if (str.length === 0) { 
         displaysearch.innerHTML = "";
         return;
     } else {
-        var xmlhttp = new XMLHttpRequest();
+        
         xmlhttp.onreadystatechange = function() {
             if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {         
 				if (xmlhttp.responseText!="1"&&xmlhttp.responseText != "2") {
+					if (data4rmdb.length==0) {
+						data4rmdb =xmlhttp.responseText;
+					}
+					
 					displaysearch.style.backgroundColor = "green";
 					displaysearch.style.color = "white";
-					displaysearch.innerHTML = xmlhttp.responseText;
+					displaysearch.innerHTML = data4rmdb;
+					console.log("From get Request->"+data4rmdb);
 				}else{
 					displaysearch.style.backgroundColor = "red";
 					displaysearch.style.color="white";
@@ -80,7 +99,49 @@
         xmlhttp.send();
     }
 }
+function addtoDatabase(){
+	// data4rmdb="User Added";
+	var userInputname =document.getElementById("name").value;
+	var gender = document.getElementById("gender").value;
+	var dateofbirth=document.getElementById("dateofbirth").value;
+	if (userInputname==="") {
+		alert("kindly enter a name!");
+		return;
+	}
+	if(gender===""){
+		alert("kindly select a gender");
+		return;
+	}
+	if(dateofbirth===""){
+		alert("Kindly and a Date");
+		return;
+	}
+	displaysearch.style.display="none";
+	var data ="name="+userInputname+"&gender="+gender+"&dateofbirth="+dateofbirth;
 
+	if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+		xmlhttp.open("POST", "postdata.php", true); 
+		console.log("1");
+     	xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");   
+     	console.log("2");               
+     	xmlhttp.send(data);
+
+     	console.log("3");
+     	console.log(xmlhttp.responseText);
+
+	}else{
+		alert("Error Inserting to Database");
+		return;
+	}
+	document.getElementById('name').value="";
+	document.getElementById('gender').value="";
+	document.getElementById('dateofbirth').value="";
+	// name.value="";
+	// gender.value="";
+	// dateofbirth.value="";
+	alert("User Successfully Addded!");
+
+}
 </script>
 </body>
 </html>
